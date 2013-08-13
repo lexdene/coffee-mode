@@ -421,7 +421,7 @@ called `coffee-compiled-buffer-name'."
 (defvar coffee-boolean-regexp "\\b\\(true\\|false\\|yes\\|no\\|on\\|off\\|null\\|undefined\\)\\b")
 
 ;; Regular expressions
-(defvar coffee-regexp-regexp "\\s$.*\\s$")
+(defvar coffee-regexp-regexp "\\s$\\(.*\\)\\s$")
 
 ;; String Interpolation(This regexp is taken from ruby-mode)
 (defvar coffee-string-interpolation-regexp "#{[^}\n\\\\]*\\(?:\\\\.[^}\n\\\\]*\\)*}")
@@ -897,6 +897,10 @@ END lie."
 (defalias 'coffee-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
 
+(defvar coffee-propertize-via-font-lock
+  `((,coffee-regexp-regexp (1 (2 . nil)))
+    ("^[[:space:]]*###\\([[:space:]]+.*\\)?$" (0 (14 . nil)))))
+
 ;;;###autoload
 (define-derived-mode coffee-mode coffee-parent-mode "Coffee"
   "Major mode for editing CoffeeScript."
@@ -932,7 +936,7 @@ END lie."
   ;; indentation
   (set (make-local-variable 'indent-line-function) #'coffee-indent-line)
   (set (make-local-variable 'tab-width) coffee-tab-width)
-  (set (make-local-variable 'syntax-propertize-function) #'coffee-propertize-function)
+  (set (make-local-variable 'font-lock-syntactic-keywords) coffee-propertize-via-font-lock)
 
   ;; imenu
   (set (make-local-variable 'imenu-create-index-function) #'coffee-imenu-create-index)
